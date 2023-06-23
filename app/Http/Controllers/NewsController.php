@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\News;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -12,13 +11,6 @@ class NewsController extends Controller
     public function __construct()
     {
         $this->middleware('auth:api', ['except' => ['index']]);
-         /*dd($auth);
-        if (!$auth) {
-            return response()->json([
-                'status' => 'fail',
-                'message' => 'Need authentication',
-            ]);
-        }*/
     }
 
     /**
@@ -35,14 +27,14 @@ class NewsController extends Controller
      */
     public function create()
     {
-
+        //
     }
 
     /**
      * Store a newly created resource in storage.
      */
 
-    public function store(Request $request)
+    public function store(Request $request): \Illuminate\Http\JsonResponse
     {
         $user = auth('api')->user();
         $news = new News;
@@ -51,15 +43,9 @@ class NewsController extends Controller
         $news->user_id = $user->id;
 
         if ($news->save()) {
-            return response()->json([
-                'status' => 'success',
-                'message' => 'News created',
-            ]);
+            return response()->json(['status' => 'success', 'message' => 'News created',]);
         } else {
-            return response()->json([
-                'status' => 'fail',
-                'message' => 'News doesnt created',
-            ]);
+            return response()->json(['status' => 'fail', 'message' => 'News doesnt created',]);
         }
     }
 
@@ -74,7 +60,7 @@ class NewsController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(string $id): \Illuminate\Http\JsonResponse
     {
         $news = DB::table('news')->where('id', '=', $id)->get();
         if (!empty($news)) {
@@ -103,10 +89,9 @@ class NewsController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $id): \Illuminate\Http\JsonResponse
     {
         $res = DB::table('news')->where('id', '=', $id)->delete();
-
         if ($res) {
             return response()->json(['status' => 'success', 'msg' => 'News deleted']);
         } else {
