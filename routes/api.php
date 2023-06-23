@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\NewsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -26,3 +27,13 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('logout', 'logout');
     Route::post('refresh', 'refresh');
 });
+
+Route::resource('news', NewsController::class);
+/*
+Route::controller(NewsController::class)->group(function () {
+    Route::get('news/{news_id}/news', 'index');
+    Route::get('news/{news_id}/news/{news_id}', 'show');
+    Route::post('news/{news_id}/news', 'store');
+    Route::put('news/{news_id}/news/{news_id}', 'update');
+    Route::delete('news/{news_id}/news/{news_id}', 'destroy');
+});*/

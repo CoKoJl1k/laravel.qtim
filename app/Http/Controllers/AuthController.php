@@ -19,10 +19,10 @@ class AuthController extends Controller
 
     public function login(Request $request): \Illuminate\Http\JsonResponse
     {
-        $input = $request->input();
+        $input = $request->only('email', 'password');
         $rules = [
-            'email' => 'required|string|email',
-            'password' => 'required|string',
+            'email' => 'required|string|email|max:255',
+            'password' => 'required|string|max:255',
         ];
         $validator = Validator::make($input, $rules);
 
@@ -32,8 +32,8 @@ class AuthController extends Controller
                 'message' => $validator->errors()->all()[0]
             ]);
         }
-        $credentials = $request->only('email', 'password');
-        $token = Auth::attempt($credentials);
+        $token = Auth::attempt($input);
+
         if (empty($token)) {
             return response()->json([
                 'status' => 'error',
@@ -57,7 +57,7 @@ class AuthController extends Controller
         $rules = [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string',
+            'password' => 'required|string|max:255',
         ];
         $validator = Validator::make($input, $rules);
         if(!empty($validator->errors()->all())) {
