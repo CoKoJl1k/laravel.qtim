@@ -19,5 +19,4 @@ class News extends Model
         'description',
         'user_id',
     ];
-
 }

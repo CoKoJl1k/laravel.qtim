@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -11,29 +12,22 @@ use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
+    private UserService $newsService;
 
-    public function __construct()
+    public function __construct(UserService $newsService)
     {
-        //$this->middleware('auth:api', ['except' => ['login', 'register','refresh']]);
+        $this->newsService = $newsService;
     }
 
     public function login(Request $request): \Illuminate\Http\JsonResponse
     {
-        $input = $request->only('email', 'password');
-        $rules = [
-            'email' => 'required|string|email|max:255',
-            'password' => 'required|string|max:255',
-        ];
-        $validator = Validator::make($input, $rules);
-
-        if(!empty($validator->errors()->all())) {
-            return response()->json([
-                'status' => 'fail',
-                'message' => $validator->errors()->all()[0]
-            ]);
+        $errors = $this->newsService->validateLogin($request);
+        if(!empty($errors['message'])) {
+            return response()->json(['status' => 'fail', 'message' => $errors['message']]);
         }
-        $token = Auth::attempt($input);
 
+        $input = $request->only('email', 'password');
+        $token = Auth::attempt($input);
         if (empty($token)) {
             return response()->json([
                 'status' => 'error',
@@ -53,24 +47,16 @@ class AuthController extends Controller
 
     public function register(Request $request): \Illuminate\Http\JsonResponse
     {
-        $input = $request->input();
-        $rules = [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|max:255',
-        ];
-        $validator = Validator::make($input, $rules);
-        if(!empty($validator->errors()->all())) {
-            return response()->json([
-                'status' => 'fail',
-                'message' => $validator->errors()->all()[0]
-            ]);
+        $errors = $this->newsService->validateRegister($request);
+        if(!empty($errors['message'])) {
+            return response()->json(['status' => 'fail', 'message' => $errors['message']]);
         }
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
+
         $token = Auth::login($user);
         return response()->json([
             'status' => 'success',

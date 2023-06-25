@@ -3,15 +3,22 @@
 namespace App\Http\Controllers;
 
 use App\Models\News;
+use App\Models\User;
+use App\Services\NewsService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class NewsController extends Controller
 {
-    public function __construct()
+    private NewsService $newsService;
+
+    public function __construct(NewsService $newsService)
     {
         $this->middleware('auth:api', ['except' => ['index']]);
+        $this->newsService = $newsService;
     }
+
 
     /**
      * Display a listing of the resource.
@@ -36,6 +43,11 @@ class NewsController extends Controller
 
     public function store(Request $request): \Illuminate\Http\JsonResponse
     {
+        $errors = $this->newsService->validate($request);
+        if(!empty($errors['message'])) {
+            return response()->json(['status' => 'fail', 'message' => $errors['message']]);
+        }
+
         $user = auth('api')->user();
         $news = new News;
         $news->title = $request->input('title');
@@ -43,9 +55,9 @@ class NewsController extends Controller
         $news->user_id = $user->id;
 
         if ($news->save()) {
-            return response()->json(['status' => 'success', 'message' => 'News created',]);
+            return response()->json(['status' => 'success', 'message' => 'News created']);
         } else {
-            return response()->json(['status' => 'fail', 'message' => 'News doesnt created',]);
+            return response()->json(['status' => 'fail', 'message' => 'News doesnt created']);
         }
     }
 
@@ -75,14 +87,20 @@ class NewsController extends Controller
      */
     public function update(Request $request, string $id): \Illuminate\Http\JsonResponse
     {
+        $errors = $this->newsService->validate($request);
+        if(!empty($errors['message'])) {
+            return response()->json(['status' => 'fail', 'message' => $errors['message']]);
+        }
+
         $title = $request->input('title');
         $description = $request->input('description');
+
         $res = DB::table('news')->where('id', '=', $id)->update(
             ["title" => $title, "description" => $description]);
         if ($res) {
             return response()->json(['status' => 'success', 'msg' => 'News updated']);
         } else {
-            return response()->json(['status' => 'fail', 'msg' => 'News already updated']);
+            return response()->json(['status' => 'fail','msg' => 'News already updated']);
         }
     }
 
