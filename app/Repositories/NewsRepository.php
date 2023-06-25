@@ -4,7 +4,6 @@ namespace App\Repositories;
 use App\Models\News;
 use App\Models\User;
 use App\Repositories\Interfaces\NewsRepositoryInterface;
-use Illuminate\Support\Facades\DB;
 
 class NewsRepository implements NewsRepositoryInterface
 {

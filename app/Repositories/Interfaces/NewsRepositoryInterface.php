@@ -3,7 +3,6 @@
 
 namespace App\Repositories\Interfaces;
 
-use App\Models\News;
 use App\Models\User;
 
 

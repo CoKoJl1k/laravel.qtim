@@ -6,7 +6,6 @@ use App\Models\News;
 use App\Repositories\Interfaces\NewsRepositoryInterface;
 use App\Services\NewsService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 
 class NewsController extends Controller
