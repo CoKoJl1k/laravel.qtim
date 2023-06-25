@@ -3,20 +3,22 @@
 namespace App\Http\Controllers;
 
 use App\Models\News;
-use App\Models\User;
+use App\Repositories\Interfaces\NewsRepositoryInterface;
 use App\Services\NewsService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
+
 
 class NewsController extends Controller
 {
     private NewsService $newsService;
+    private NewsRepositoryInterface $newsRepository;
 
-    public function __construct(NewsService $newsService)
+    public function __construct(NewsService $newsService, NewsRepositoryInterface $newsRepository)
     {
         $this->middleware('auth:api', ['except' => ['index']]);
         $this->newsService = $newsService;
+        $this->newsRepository = $newsRepository;
     }
 
 
@@ -25,7 +27,7 @@ class NewsController extends Controller
      */
     public function index(): \Illuminate\Http\JsonResponse
     {
-        $news = News::all();
+        $news = $this->newsRepository->all();
         return response()->json(['news' => $news]);
     }
 
@@ -74,12 +76,11 @@ class NewsController extends Controller
      */
     public function edit(string $id): \Illuminate\Http\JsonResponse
     {
-        $news = DB::table('news')->where('id', '=', $id)->get();
-        if (!empty($news)) {
-            return response()->json(['news' => $news]);
-        } else {
+        $news = $this->newsRepository->getById($id);
+        if (empty($news)) {
             return response()->json(['status' => 'fail', 'msg' => 'No data found']);
         }
+        return response()->json(['news' => $news]);
     }
 
     /**
@@ -91,17 +92,15 @@ class NewsController extends Controller
         if(!empty($errors['message'])) {
             return response()->json(['status' => 'fail', 'message' => $errors['message']]);
         }
+        $news = $this->newsRepository->getById($id);
 
-        $title = $request->input('title');
-        $description = $request->input('description');
-
-        $res = DB::table('news')->where('id', '=', $id)->update(
-            ["title" => $title, "description" => $description]);
-        if ($res) {
-            return response()->json(['status' => 'success', 'msg' => 'News updated']);
-        } else {
-            return response()->json(['status' => 'fail','msg' => 'News already updated']);
+        if(empty($news)) {
+            return response()->json(['status' => 'fail', 'msg' => 'Not found news']);
         }
+        $news->title = $request->input('title');
+        $news->description = $request->input('description');
+        $news->update();
+        return response()->json(['status' => 'success', 'msg' => 'News updated']);
     }
 
     /**
@@ -109,11 +108,12 @@ class NewsController extends Controller
      */
     public function destroy(string $id): \Illuminate\Http\JsonResponse
     {
-        $res = DB::table('news')->where('id', '=', $id)->delete();
-        if ($res) {
-            return response()->json(['status' => 'success', 'msg' => 'News deleted']);
-        } else {
-            return response()->json(['status' => 'fail', 'msg' => 'News already deleted']);
+        $news = $this->newsRepository->getById($id);
+        if(empty($news)) {
+            return response()->json(['status' => 'fail', 'msg' => 'Not found news']);
         }
+        $news->delete();
+        return response()->json(['status' => 'success', 'msg' => 'News deleted']);
+
     }
 }

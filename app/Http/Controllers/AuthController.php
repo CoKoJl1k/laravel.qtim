@@ -29,10 +29,7 @@ class AuthController extends Controller
         $input = $request->only('email', 'password');
         $token = Auth::attempt($input);
         if (empty($token)) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Unauthorized',
-            ], 401);
+            return response()->json(['status' => 'error', 'message' => 'Unauthorized',], 401);
         }
         $user = Auth::user();
         return response()->json([
