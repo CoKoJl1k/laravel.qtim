@@ -113,6 +113,5 @@ class NewsController extends Controller
         }
         $news->delete();
         return response()->json(['status' => 'success', 'msg' => 'News deleted']);
-
     }
 }
