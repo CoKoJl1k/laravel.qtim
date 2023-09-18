@@ -7,7 +7,6 @@ use App\Repositories\Interfaces\NewsRepositoryInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redis;
 
-
 class RedisController extends Controller
 {
 
