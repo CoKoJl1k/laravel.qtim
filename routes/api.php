@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\NewsController;
+use App\Http\Controllers\RedisController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -20,7 +21,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-
 Route::controller(AuthController::class)->group(function () {
     Route::post('login', 'login');
     Route::post('register', 'register');
@@ -29,6 +29,15 @@ Route::controller(AuthController::class)->group(function () {
 });
 
 Route::resource('news', NewsController::class);
+
+
+
+Route::get('redis', [RedisController::class,'index']);
+
+Route::get('redis_set', [RedisController::class,'setKeyValue']);
+
+Route::get('redis_get', [RedisController::class,'getValue']);
+
 /*
 Route::controller(NewsController::class)->group(function () {
     Route::get('news/{news_id}/news', 'index');
