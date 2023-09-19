@@ -17,27 +17,27 @@ class RedisController extends Controller
         $this->newsRepository = $newsRepository;
     }
 
-
     /**
      * Display a listing of the resource.
      */
-    public function index(): \Illuminate\Http\JsonResponse
+    public function index(Request $request): \Illuminate\Http\JsonResponse
     {
-
         $news = $this->newsRepository->all();
+        $news = serialize($news);
+        Redis::set('news', $news);
         return response()->json(['news' => $news]);
     }
 
     public function setKeyValue(Request $request)
     {
-
         Redis::set('key', 'value');
         return response()->json(['message' => 'Key-Value pair set in Redis']);
     }
 
     public function getValue(Request $request)
     {
-        $value = Redis::get('key');
+        $value = Redis::get('news');
+        $value = unserialize($value);
         return response()->json(['value' => $value]);
     }
 
