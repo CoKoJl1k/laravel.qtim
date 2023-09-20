@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\RedisController;
+use App\Http\Controllers\QueueController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -31,12 +32,14 @@ Route::controller(AuthController::class)->group(function () {
 Route::resource('news', NewsController::class);
 
 
-
 Route::get('redis', [RedisController::class,'index']);
-
 Route::get('redis_set', [RedisController::class,'setKeyValue']);
-
 Route::get('redis_get', [RedisController::class,'getValue']);
+
+
+Route::get('queue', [QueueController::class,'index']);
+Route::get('json_create', [QueueController::class,'create']);
+Route::get('json_show', [QueueController::class,'show']);
 
 /*
 Route::controller(NewsController::class)->group(function () {
@@ -45,4 +48,5 @@ Route::controller(NewsController::class)->group(function () {
     Route::post('news/{news_id}/news', 'store');
     Route::put('news/{news_id}/news/{news_id}', 'update');
     Route::delete('news/{news_id}/news/{news_id}', 'destroy');
-});*/
+});
+*/

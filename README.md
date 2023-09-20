@@ -16,3 +16,9 @@ http://laravel.qtim/api/news/58
 DELETE
 http://laravel.qtim/api/news/63
 
+
+============================================отслеживание очередей
+php artisan queue:work --queue=default2,default3,default
+--------------------
+php artisan horizon
+===================================================================
