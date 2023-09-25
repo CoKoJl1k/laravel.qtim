@@ -25,25 +25,19 @@ class QueueController extends Controller
      */
     public function index(Request $request)
     {
-        dd(config('logging.channels.single'));
-
-        //dd($this->app['config']["logging.channels.{$name}"]);
-        Log::info(1111);
-        die();
+        //dd(config('logging.channels.single'));
         $data = $this->newsRepository->all();
-        for ($i = 0 ; $i <= 3; $i++) {
+        for ($i = 0 ; $i <= 300; $i++) {
             //ProcessTask::dispatch($data)->delay(Carbon::now()->addSeconds(5));
             ProcessTask::dispatch($data)->onQueue('default');
         }
-        for ($i = 0 ; $i <= 3; $i++) {
+        for ($i = 0 ; $i <= 300; $i++) {
             ProcessTask::dispatch($data)->onQueue('default2');
         }
-        for ($i = 0 ; $i <= 3; $i++) {
+        for ($i = 0 ; $i <= 300; $i++) {
             ProcessTask::dispatch($data)->onQueue('default3');
         }
-
     }
-
 
     public function create(Request $request)
     {
