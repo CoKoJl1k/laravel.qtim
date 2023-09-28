@@ -31,15 +31,15 @@ Route::controller(AuthController::class)->group(function () {
 
 Route::resource('news', NewsController::class);
 
-
 Route::get('redis', [RedisController::class,'index']);
 Route::get('redis_set', [RedisController::class,'setKeyValue']);
 Route::get('redis_get', [RedisController::class,'getValue']);
 
-
 Route::get('queue', [QueueController::class,'index']);
 Route::get('json_create', [QueueController::class,'create']);
 Route::get('json_show', [QueueController::class,'show']);
+
+
 
 /*
 Route::controller(NewsController::class)->group(function () {

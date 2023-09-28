@@ -13,6 +13,18 @@ use Illuminate\Support\Facades\Broadcast;
 |
 */
 
+
+Broadcast::channel('chat', function ($user) {
+    return true; // You can add authorization logic here if needed
+});
+
+Broadcast::channel('private-chat.{roomId}', function ($user, $roomId) {
+    // Implement your authorization logic here
+    return $user->canAccessChatRoom($roomId);
+});
+
 Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
     return (int) $user->id === (int) $id;
 });
+
+
