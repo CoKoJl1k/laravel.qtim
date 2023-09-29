@@ -22,3 +22,4 @@ Route::get('messages', [MessageController::class,'index']);
 Route::get('send', [MessageController::class,'send']);
 
 Route::post('send-message', [MessageController::class,'sendMessage']);
+Route::post('send-message2', [MessageController::class,'sendMessage2']);

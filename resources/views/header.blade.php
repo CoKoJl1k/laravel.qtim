@@ -15,8 +15,7 @@
     <script type="module" src="{{ asset('js/scripts.js') }}"></script>
 
     <script src="{{ asset('/build/assets/app-4ed993c7.js')}}"></script>
-    <script src="{{ asset('/build/assets/app-ed71bd41.js')}}"></script>
-
+    <script src="{{ asset('/build/assets/app-192f1c3e.js')}}"></script>
 
     <script src="{{ asset('js/scripts.js') }}"></script>
     <title>To do list</title>
